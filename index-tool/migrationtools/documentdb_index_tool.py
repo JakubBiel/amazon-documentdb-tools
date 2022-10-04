@@ -130,7 +130,7 @@ class DocumentDbIndexTool(IndexToolConstants):
             else:
                 raise
 
-    def _get_db_connection(self, host, port, tls, tls_ca_file, username,
+    def _get_db_connection(self, host, port, tls, tls_ca_file, tls_allow_invalid_hostnames, username,
                            password, auth_db):
         """Connect to instance, returning a connection"""
         logging.debug("Connecting to instance at %s:%s", host, port)
@@ -141,6 +141,7 @@ class DocumentDbIndexTool(IndexToolConstants):
             ssl=tls,
             ssl_ca_certs=tls_ca_file,
             connect=True,
+            tlsAllowInvalidHostnames=tls_allow_invalid_hostnames,
             connectTimeoutMS=DocumentDbIndexTool.CONNECT_TIMEOUT,
             serverSelectionTimeoutMS=DocumentDbIndexTool.CONNECT_TIMEOUT)
 
@@ -523,6 +524,7 @@ class DocumentDbIndexTool(IndexToolConstants):
                     port=self.args.port,
                     tls=self.args.tls,
                     tls_ca_file=self.args.tls_ca_file,
+                    tls_allow_invalid_hostnames=self.args.tlsAllowInvalidHostnames,
                     username=self.args.username,
                     password=self.args.password,
                     auth_db=self.args.auth_db)
@@ -690,6 +692,11 @@ def main():
                         required=False,
                         action='store_true',
                         help='Permit execution on Python 3.6 and prior')
+
+    parser.add_argument('--tlsAllowInvalidHostnames',
+                        required=False,
+                        action='store_true',
+                        help='Allow connecting without matching DNS on certificates')
 
     args = parser.parse_args()
 

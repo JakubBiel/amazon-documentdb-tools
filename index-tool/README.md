@@ -18,14 +18,17 @@ Clone the repository, then run the following command in the repo top-level direc
 **NOTE** - This tool requires Python 3.7 or greater.
 
 ## Using the Index Tool
+First, establish an SSH tunnel via the jumpbox:
+`ssh -N -L 27017:<source_endpoint>:27017 <jumpbox_hostname>`
+
 To dump indexes from a running MongoDB instance or replica set, run the following command:
-`python3 migrationtools/documentdb_index_tool.py --dump-indexes --host <host> --port <port> --username <username> --password <password> --auth-db <auth db> --dir <directory to dump metadata to>`
+`python3 migrationtools/documentdb_index_tool.py --dump-indexes --host 127.0.0.1 --port 27017 --username <username> --password <password> --auth-db <auth db> --dir <directory to dump metadata to> --tls --tls-ca-file <path_to_certs>/rds-combined-ca-bundle.pem --tlsAllowInvalidHostnames`
 
 To check for compatibility issues against dumped database metadata, run the following command:
 `python3 migrationtools/documentdb_index_tool.py --show-issues  --dir <directory that contains metadata dump>`
 
 To restore only indexes that are compatible with Amazon DocumentDB, run the following command:
-`python3 migrationtools/documentdb_index_tool.py --restore-indexes --dir <directory that contains metadata dump>`
+`python3 migrationtools/documentdb_index_tool.py --restore-indexes --host 127.0.0.1 --port 27017 --username <username> --password <password> --auth-db <auth db> --dir <directory to dump metadata to> --tls --tls-ca-file <path_to_certs>/rds-combined-ca-bundle.pem --tlsAllowInvalidHostnames`
 
 ## License
 
